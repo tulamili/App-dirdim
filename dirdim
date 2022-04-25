@@ -4,7 +4,7 @@ use strict ; use warnings ;
 use feature qw[ say ] ; 
 use Time::HiRes qw[gettimeofday tv_interval] ; 
 my $time_start = [ gettimeofday ] ; 
-use Getopt::Std ; getopts '.nrvy' , \my%o ; 
+use Getopt::Std ; getopts '.jnrvy' , \my%o ; 
 use Term::ANSIColor qw [ :constants ] ; $Term::ANSIColor::AUTORESET = 1 ; 
 use File::Spec::Functions qw[catfile splitdir ] ; 
 use List::Util qw[ minstr maxstr ] ;
@@ -16,7 +16,7 @@ exit 0 ;
 
 sub measure_simple { 
   my @tmp ;
-  push @tmp , ( "Non-dir-child-files" ) , CYAN ( "Dir-child-files" ) ;
+  push @tmp , $o{j} ? ( "Non-dir-child-files" ) , CYAN ( "Dir-child-files" )  : ("直下の通常ファイル", "直下のディレクトリ" ) ; 
   push @tmp , BRIGHT_BLUE ("max_depth"), BRIGHT_BLUE ("all-files") if defined $o{r} ;
   push @tmp , BRIGHT_CYAN "Given directory" ;
   push @tmp , BRIGHT_BLUE "A file name at the max depth" if defined $o{r} ;
@@ -107,6 +107,7 @@ sub HELP_MESSAGE {
  オプション: 
 
   -.  : ファイル名がピリオドで始まるファイル(隠しファイルと言われる)について調べる。(dot file)
+  -j  : 出力の表頭の表記を、英語から日本語に変更。
   -n  : ファイル名がピリオドで始まるファイル(隠しファイルと言われる)は対象外とする。(Nomal)
   -r  ; 最も深い所にあるファイルの名前とその深さを示す。さらに、findで見つかるファイルの個数も出力。(Recursive)
   -v  : ファイル名の(文字列としての)最小値と最大値も出力する。(verbose)
