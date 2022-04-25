@@ -16,11 +16,11 @@ exit 0 ;
 
 sub measure_simple { 
   my @tmp ;
-  push @tmp , $o{j} ? ( "Non-dir-child-files" ) , CYAN ( "Dir-child-files" )  : ("直下の通常ファイル", "直下のディレクトリ" ) ; 
-  push @tmp , BRIGHT_BLUE ("max_depth"), BRIGHT_BLUE ("all-files") if defined $o{r} ;
-  push @tmp , BRIGHT_CYAN "Given directory" ;
-  push @tmp , BRIGHT_BLUE "A file name at the max depth" if defined $o{r} ;
-  push @tmp , ("fileName_minstr" , (BRIGHT_WHITE "fileName_maxstr" ) ) if $o{v} ; 
+  push @tmp , !$o{j} ? ( "Non-dir-child-files" , CYAN ( "Dir-child-files" ) ) : ("直下の通常ファイル", CYAN "直下のディレクトリ" ) ; 
+  push @tmp , !$o{j} ? ( BRIGHT_BLUE BOLD ("max_depth"), BOLD ("all-files") ) : ( BRIGHT_BLUE (BOLD "最深の深さ") , BOLD "全てのファイル(ディレクトリ含む)") if defined $o{r} ;
+  push @tmp , YELLOW !$o{j} ? "Given directory" : "所与のディレクトリ" ;
+  push @tmp , BRIGHT_WHITE !$o{j} ? "A file name at the max depth" : "最深部のファイルの例" if defined $o{r} ;
+  push @tmp , !$o{j} ? ("fileName_minstr" , BRIGHT_WHITE "fileName_maxstr" ) : ("ファイル名(辞書順先頭)",BRIGHT_WHITE "ファイル名(辞書順末尾)") if $o{v} ; 
   say join "\t" , map { UNDERLINE $_ } @tmp ; 
   #print "\n--\n" ;
   
@@ -28,7 +28,7 @@ sub measure_simple {
   for ( @ARGV ) { 
     chomp ;
     #do { print "notExists\t$_\n" ; next ; } if ! -e $_  ; 
-    do { print join("\t",'','',$_,YELLOW "not a directory."),"\n" if ! $o{y} ; $z++ ; next } if ! -d $_  ; 
+    do { print join("\t",'','',$_,RED "not a directory."),"\n" if ! $o{y} ; $z++ ; next } if ! -d $_  ; 
     opendir my $dh , $_ or do { warn "$_ does not open.\n" ; next } ;
     my @files = grep {! /\A\.{1,2}\Z/ } readdir $dh  ; 
     @files = grep {/\A\./ } @files if $o{'.'} ; 
@@ -43,9 +43,9 @@ sub measure_simple {
 
     my @out ; 
     push @out , $pnum , CYAN $dnum ;
-    push @out , BRIGHT_BLUE "$dp\t$finum" . ($links ? FAINT "($links)" : '') if defined $dp ; # 最も深い所の深さ  それと数えたファイル数
-    push @out , BRIGHT_CYAN $_ . $T ; 
-    push @out , BRIGHT_BLUE $dn if defined $dn ; # 最も深い所にあるファイルの名前
+    push @out , BRIGHT_BLUE ("$dp"), BOLD "$finum" . ($links ? FAINT "($links)" : '') if defined $dp ; # 最も深い所の深さ  それと数えたファイル数
+    push @out , YELLOW $_ . $T ; 
+    push @out , BRIGHT_WHITE $dn if defined $dn ; # 最も深い所にあるファイルの名前
     if ( $o{v} ) { 
     	my $f1 = minstr @files ;
     	my $f2 = maxstr @files ; 
@@ -77,8 +77,10 @@ sub max_depth ( $ ) {
    find ( {
     no_chdir => 1 , 
     #wanted => sub { -d $_ and my @t = splitdir ( $_ ); $d=@t and $dname=$_ if @t> $d }}  , $_[0] ) ; 
-    wanted => sub { $n++ ; $l ++ if -l $_ ; my @t = splitdir ( $_ ); $d=@t and $dname=$_ if @t> $d }}  , $_[0] ) ; 
-   $d .= '/' if -d $d ;
+    #wanted => sub { $n++ ; $l ++ if -l $_ ; my @t = splitdir ( $_ ) ; $d = @t and $dname=$_ if @t > $d }}  , $_[0] ) ; 
+    wanted => sub { my @t = splitdir ( $_ ) ; unless ( $o{n} && grep { m/\A\.([^\.]|$)/ } @t ) { $n++ ; $l ++ if -l $_ ;  ; $d = @t and $dname=$_ if @t > $d }}} , $_[0] ) ; 
+   $d -= 2 if $d =~ /^\d+$/;
+   $d .= '/' if -d $d ; # <-- - ? 
    return $d, $dname , $n , $l ;
 }
 
