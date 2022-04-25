@@ -1,0 +1,6 @@
+
+Revision history for the module "App::dirdim"
+
+-.---  2021-05-26 First created with the name "dirdim" on Bin::File::Dir
+-.---  2021-05-29 Also once included "dirdim" on App::Bin4TSV
+0.030  2022-04-25 Some small functions are updated in "dirdim".
