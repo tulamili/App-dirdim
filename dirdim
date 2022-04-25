@@ -10,7 +10,8 @@ use File::Spec::Functions qw[catfile splitdir ] ;
 use List::Util qw[ minstr maxstr ] ;
 my $T = catfile '', '' ; # OS毎に異なる可能性のある、ファイルパスの区切り文字を取得。 
 
-& HELP_MESSAGE unless @ARGV ; 
+# & HELP_MESSAGE unless @ARGV ; 
+@ARGV = ( "." ) unless @ARGV  ;
 & measure_simple ; 
 exit 0 ; 
 
@@ -101,10 +102,10 @@ sub HELP_MESSAGE {
 
 =head1
 
- $0 arg [arg] [arg] ..
+ $0 DIR [DIR] [DIR] ..
 
-  引数args で指定されたディレクトリの直下にある、非ディリクトリファイルの数とディレトリの数を出力する。
-  シンボリックファイルの個数は括弧内に示す。 
+  指定されたディレクトリの直下にある、非ディリクトリファイルの数とディレトリの数を出力する。
+  シンボリックファイルの個数は括弧内に示す。 (何も引数が無い場合は、カレントディレクトリに対して動作。)
 
  オプション: 
 
@@ -115,7 +116,7 @@ sub HELP_MESSAGE {
   -v  : ファイル名の(文字列としての)最小値と最大値も出力する。(verbose)
   -y  : 引数 arg でディレクトリ以外のものがあった場合は、処理を飛ばす。(出力が簡潔になる。)
 
-
+  --help : このヘルプを表示。
 
  開発上のメモ: 
    * glob の */../*のような探索と File::Find による探索の違いを発見した。dirdimとdirdigで共通化の検討が必要。
