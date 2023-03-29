@@ -1,6 +1,6 @@
 package App::dirdim ;  
-our $VERSION = '0.031' ; 
-our $DATE = '2022-04-25T22:34+09:00' ; 
+our $VERSION = '0.040' ; 
+our $DATE = '2023-03-29T14:58+09:00' ; 
 
 =encoding utf8
 
