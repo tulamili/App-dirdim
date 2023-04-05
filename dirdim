@@ -8,17 +8,16 @@ use Time::HiRes qw[gettimeofday tv_interval] ;
 use Getopt::Std ; 
 use Term::ANSIColor qw [ :constants ] ; ${Term::ANSIColor::AUTORESET} = 1 ; 
 use File::Spec::Functions qw[ catfile splitdir ] ; 
-use List::Util qw[ minstr maxstr ] ;
+use List::Util qw[ minstr maxstr all any ] ;
 use App::dirdim ; # $App::dirdim::VERSIONを利用するため。開発中は、既にインストール済みのものを使ってしまうので、意図しにくい動作になるだろう。
 
 my $time_start ;# = [ gettimeofday ] ; 
-BEGIN { $time_start = [ gettimeofday ] }; # BEGIN UNITCHECK CHECK INIT 
+BEGIN { $time_start = [ gettimeofday ] }; # BEGIN UNITCHECK CHECK INIT  # 動作時間の測定をできるだけ正確にするためBEGINで囲んだ。
 my $I = catfile '', '' ; # OS毎に異なる可能性のある、ファイルパスの区切り文字を取得。 
 
 getopts '.:dv' , \my%o ; 
 $o{'.'} //= ''  ;
-# & HELP_MESSAGE unless @ARGV ; 
-@ARGV = ( "." ) unless @ARGV  ;
+@ARGV = ( "." ) unless @ARGV  ; # & HELP_MESSAGE unless @ARGV ; 
 & measure_simple ; 
 exit 0 ; 
 
@@ -89,7 +88,9 @@ sub max_depth ( $ ) {
     no_chdir => 1 , 
     wanted => sub { 
       my @t = splitdir ( $_ ) ; 
-      $n++ if $_ ne '.' ; 
+      return if $o{'.'} =~ m/only/io && $t[-1] !~ /^\./ ; 
+      return if $o{'.'} eq '0' && any { $_ =~ /^\./ } @t[1..$#t] ; # <-- - 定義が微妙になり得る。
+      $n ++ if $_ ne '.' ; 
       $l ++ if -l $_ ; 
       $depth = @t - 1 and $deepest_file_name = -d $_ ? "$_$I" : $_ if @t > $depth ;
     }
