@@ -22,7 +22,7 @@ sub measure_simple {
   push @tmp , ( "nondir" , CYAN ( "subdir" ) ) ;
   push @tmp , ( BRIGHT_BLUE ("depth"), "alltree" ) if defined $o{d} ;
   push @tmp , YELLOW "given_dir" ;
-  push @tmp , BRIGHT_BLUE "A file name at the max depth" if defined $o{d} ;
+  push @tmp , BRIGHT_BLUE "An example at the deepest" if defined $o{d} ;
   push @tmp , ("fileName_minstr" , "fileName_maxstr" ) if $o{v} ; 
   say join "\t" , map { UNDERLINE $_ } @tmp ; 
   
