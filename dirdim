@@ -47,7 +47,7 @@ sub measure_simple {
     my ( $dp, $dn , $finum, $links ) = max_depth ( $_ ) if $o{d} ; # <-- 返値は、深さ・最深ファイル名の例・計数したファイル数・シンボリックな数
     chdir $dir0 ;
 
-    do { $t{d} += @dfiles ; $t{n} += @nfiles ; $t{D} = max $t{D}, $dp if defined $dp ; $t{a} += $finum // 0 } ;
+    do { $t{d} += @dfiles ; $t{n} += @nfiles ; $t{D} = max $t{D}//0, $dp if defined $dp ; $t{a} += $finum // 0 } ;
 
     my @out ; 
     push @out , fsl ( @nfiles ) , CYAN fsl ( @dfiles ) ; 
