@@ -1,6 +1,6 @@
 package App::dirdim ;  
-our $VERSION = '0.043' ; 
-our $DATE = '2023-04-05T17:27+09:00' ; 
+our $VERSION = '0.045' ; 
+our $DATE = '2023-04-05T22:30+09:00' ; 
 
 =encoding utf8
 
@@ -16,13 +16,13 @@ This module provides a Unix-like command `F<dirdim>'.
 
  dirdim DIR [DIR] [DIR] ..
 
-  Counts the numbers of files just under the specified director(y/ies).
+  This commnd counts the numbers of files just under the specified director(y/ies).
   The numbers are each of both for non-directories and directories. 
-  (Symblic files are also counted and the number is shown in the round parenthesis.)
-  If any argument is not specified as DIR, the current directory is regarded to be specified.
+  (Symblic files are also counted and the numbers appear in the round parenthesis.)
+  The current directory is regarded to be specified if any argument DIR is not specified.
 
-  `dirdim --help' shows Japanese help. 
   `perldoc App::dirdim' shows English help. 
+  `perldoc dirdim' and `dirdim --help' shows Japanese help. 
 
  Options : 
 
@@ -30,6 +30,11 @@ This module provides a Unix-like command `F<dirdim>'.
   -v  : Verbosely shows the names of files names as examples. The first and the last are shown.
   -. 0    : Suppresses counting the files having the name beginning from "." (period).
   -. only : Counting only the files having the name beginning from "." (period).
+
+=head1 SEE ALSO
+
+  App::colorplus -- `colorplus -0' deletes the colros given by ANSI escape code. 
+  App::dirlayers -- gives minute hierarchial information about a directory using a triangular matrix.
 
 =head1 AUTHOR
 
