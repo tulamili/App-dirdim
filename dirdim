@@ -85,7 +85,7 @@ sub max_depth ( $ ) {
     }
    } , '.' ) ; 
    chdir $dir0 ;
-   return $depth , $deepest_file_name =~ s/^..//or , $n , $l ;
+   return $depth , $deepest_file_name =~ s/^\.$T//or , $n , $l ;
 }
 
 sub VERSION_MESSAGE {}
