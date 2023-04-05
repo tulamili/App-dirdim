@@ -4,12 +4,13 @@ use strict ;
 use warnings ; 
 use feature qw[ say ] ; 
 use Cwd qw [ getcwd ] ;
-use Time::HiRes qw[gettimeofday tv_interval] ; 
-use Getopt::Std ; 
-use Term::ANSIColor qw [ :constants ] ; ${Term::ANSIColor::AUTORESET} = 1 ; 
-use File::Spec::Functions qw[ catfile splitdir ] ; 
-use List::Util qw[ minstr maxstr all any ] ;
 use App::dirdim ; # $App::dirdim::VERSIONを利用するため。開発中は、既にインストール済みのものを使ってしまうので、意図しにくい動作になるだろう。
+use File::Find qw[ find ] ; 
+use File::Spec::Functions qw[ catfile splitdir ] ; 
+use Getopt::Std ; 
+use List::Util qw[ minstr maxstr all any ] ;
+use Term::ANSIColor qw [ :constants ] ; ${Term::ANSIColor::AUTORESET} = 1 ; 
+use Time::HiRes qw[gettimeofday tv_interval] ; 
 
 my $time_start ;# = [ gettimeofday ] ; 
 BEGIN { $time_start = [ gettimeofday ] }; # BEGIN UNITCHECK CHECK INIT  # 動作時間の測定をできるだけ正確にするためBEGINで囲んだ。
@@ -18,6 +19,7 @@ my $I = catfile '', '' ; # OS毎に異なる可能性のある、ファイルパ
 getopts '.:dv' , \my%o ; 
 $o{'.'} //= ''  ;
 @ARGV = ( "." ) unless @ARGV  ; # & HELP_MESSAGE unless @ARGV ; 
+my ($y,$z) = (0,0) ; # 結果的に処理対象となったものと、そうでないもの
 & measure_simple ; 
 exit 0 ; 
 
@@ -30,7 +32,7 @@ sub measure_simple {
   push @tmp , ("fileName_minstr" , "fileName_maxstr" ) if $o{v} ; 
   say join "\t" , map { UNDERLINE $_ } @tmp ; 
   
-  my ($y,$z) = (0,0) ; # 結果的に処理対象となったものと、そうでないもの
+  
   my $dir0 = getcwd ;
   for ( @ARGV ) { 
     chomp ;
@@ -60,6 +62,9 @@ sub measure_simple {
     $y ++ ;
     closedir $dh ; 
   }
+}
+
+END{
   my $time_elapsed = sprintf '%.4f', tv_interval ( $time_start , [ gettimeofday ] ) ;
   my $end ;
   $end .= "$y entries. " if $y > 1 ;
@@ -70,7 +75,6 @@ sub measure_simple {
   say STDERR BOLD FAINT ITALIC $end ; 
 }
 
-use File::Find qw[ find ] ; 
 
 sub fsl ( @ ) {  # Faint, Symblic Link の略のつもり。
   scalar @_ . do { my @L = grep { -l } @_ ; @L == 0 ? "" : FAINT "(" . scalar @L . ")"  }  ;
@@ -89,7 +93,7 @@ sub max_depth ( $ ) {
     wanted => sub { 
       my @t = splitdir ( $_ ) ; 
       return if $o{'.'} =~ m/only/io && $t[-1] !~ /^\./ ; 
-      return if $o{'.'} eq '0' && any { $_ =~ /^\./ } @t[1..$#t] ; # <-- - 定義が微妙になり得る。
+      return if $o{'.'} eq '0' && any { $_ =~ /^\./ } @t[1..$#t] ; # <-- - 定義が微妙になり得る。# findで全部見て回るので計算の無駄が生じている
       $n ++ if $_ ne '.' ; 
       $l ++ if -l $_ ; 
       $depth = @t - 1 and $deepest_file_name = -d $_ ? "$_$I" : $_ if @t > $depth ;
