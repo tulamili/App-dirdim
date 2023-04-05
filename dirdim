@@ -41,9 +41,9 @@ sub measure_simple {
     @files = grep {/^\./ } @files if $o{'.'} =~ m/only/io ; # -. なら、ドットファイルのみを対象とする。
     @files = grep { ! /^\./ } @files if 0 eq $o{'.'} ; # -. 0 なら、ドットファイルは対象外とする。
     chdir $_ ; 
-    my @dfiles = do { grep { -d } @files } ; 
+    my ( @dfiles , @nfiles ) ; # ディレクトリかそれ以外か
+    for ( @files ) { if ( -d ) { push @dfiles, $_ ; $_ .= $I } else { push @nfiles, $_ } }
     my $dnum = scalar @dfiles . do { my @L = grep { -l } @dfiles ; my $l = @L ; $l == 0 ? "" : FAINT "($l)"  }  ;
-    my @nfiles = grep { ! -d } @files ; 
     my $pnum = scalar @nfiles . do { my @L = grep { -l } @nfiles ; my $l = @L ; $l == 0 ? "" : FAINT "($l)"  }  ;
     my ( $dp, $dn , $finum, $links ) = max_depth ( $_ ) if $o{d} ; # <-- - 深い所まで見る
     chdir $dir0 ;
