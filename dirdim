@@ -1,13 +1,17 @@
 #!/usr/bin/perl
 #use 5.001 ; 
-use strict ; use warnings ; 
+use strict ; 
+use warnings ; 
 use feature qw[ say ] ; 
 use Time::HiRes qw[gettimeofday tv_interval] ; 
-my $time_start = [ gettimeofday ] ; 
+my $time_start ;# = [ gettimeofday ] ; 
 use Getopt::Std ; 
 use Term::ANSIColor qw [ :constants ] ; $Term::ANSIColor::AUTORESET = 1 ; 
 use File::Spec::Functions qw[ catfile splitdir ] ; 
 use List::Util qw[ minstr maxstr ] ;
+use App::dirdim ; # $App::dirdim::VERSIONを利用するため。開発中は、既にインストール済みのものを使ってしまうので、意図しにくい動作になるだろう。
+
+BEGIN { $time_start = [ gettimeofday ] }; # BEGIN UNITCHECK CHECK INIT 
 my $T = catfile '', '' ; # OS毎に異なる可能性のある、ファイルパスの区切り文字を取得。 
 
 getopts '.:dv' , \my%o ; 
