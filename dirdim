@@ -116,6 +116,8 @@ sub HELP_MESSAGE {
   シンボリックファイルの個数は括弧内に示す。暗い色の文字で(8)や(3)のように表記。
   何も引数が無い場合は、カレントディレクトリに対して動作。
 
+  The command line `perldoc App::dirdim' shows the English help of `dirdim' command.
+
  オプション: 
 
   -d  ; 最も深い所にあるファイルの名前とその深さを示す。さらに、findで見つかるファイルの個数も出力。
