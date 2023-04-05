@@ -1,12 +1,12 @@
 package App::dirdim ;  
-our $VERSION = '0.042' ; 
+our $VERSION = '0.043' ; 
 our $DATE = '2023-04-05T17:27+09:00' ; 
 
 =encoding utf8
 
 =head1 NAME
 
-App::dirdim
+App::dirdim -- Counts the numbers of files just under the specified director(y/ies).
 
 =head1 SYNOPSIS
 
