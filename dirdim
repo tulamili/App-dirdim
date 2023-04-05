@@ -57,10 +57,11 @@ sub measure_simple {
   }
   my $time_elapsed = sprintf '%.4f', tv_interval ( $time_start , [ gettimeofday ] ) ;
   my $end ;
-  $end .= "$y entries are processed. " if $y > 1 ;
+  $end .= "$y entries. " if $y > 1 ;
+  $end .= "${time_elapsed}s. " ; 
   $end .= "The numbers of files are shown in left columns. " ; 
-  $end .= "$z entrie(s) are suppressed for the processing. " if $z ;
-  $end .= "$time_elapsed seconds in calculation. ($0)" ;
+  $end .= "$z entrie(s) are suppressed in the processing. " if $z ;
+  $end .= "(App::dirdim\@$App::dirdim::VERSION $0)" ;
   say STDERR BOLD FAINT ITALIC $end ; 
 }
 
