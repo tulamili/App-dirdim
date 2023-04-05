@@ -6,13 +6,13 @@ use feature qw[ say ] ;
 use Time::HiRes qw[gettimeofday tv_interval] ; 
 my $time_start ;# = [ gettimeofday ] ; 
 use Getopt::Std ; 
-use Term::ANSIColor qw [ :constants ] ; $Term::ANSIColor::AUTORESET = 1 ; 
+use Term::ANSIColor qw [ :constants ] ; ${Term::ANSIColor::AUTORESET} = 1 ; 
 use File::Spec::Functions qw[ catfile splitdir ] ; 
 use List::Util qw[ minstr maxstr ] ;
 use App::dirdim ; # $App::dirdim::VERSIONを利用するため。開発中は、既にインストール済みのものを使ってしまうので、意図しにくい動作になるだろう。
 
 BEGIN { $time_start = [ gettimeofday ] }; # BEGIN UNITCHECK CHECK INIT 
-my $T = catfile '', '' ; # OS毎に異なる可能性のある、ファイルパスの区切り文字を取得。 
+my $I = catfile '', '' ; # OS毎に異なる可能性のある、ファイルパスの区切り文字を取得。 
 
 getopts '.:dv' , \my%o ; 
 $o{'.'} //= ''  ;
@@ -38,16 +38,16 @@ sub measure_simple {
     my @files = grep { ! /^\.{1,2}$/ } readdir $dh  ; # そのディレクトリの下の各ファイルについて、ファイル名のみが入る(ディレトクリ名は入らない)。
     @files = grep {/^\./ } @files if $o{'.'} =~ m/only/io ; # -. なら、ドットファイルのみを対象とする。
     @files = grep { ! /^\./ } @files if 0 eq $o{'.'} ; # -. 0 なら、ドットファイルは対象外とする。
-    my @dfiles = do { my $t = $_ ; grep { -d "$t$T$_" and  $_ = $_.$T } @files } ; 
-    my $dnum = (scalar @dfiles) . do { my $t = $_ ; my @L = grep {-l "$t$T$_"} @dfiles ; my $l = @L ; $l == 0 ? "" : FAINT "($l)"  }  ;
-    my @nfiles =do { my $t = $_ ; grep { ! -d "$t$T$_" } @files } ; 
-    my $pnum = (scalar @nfiles ). do { my $t = $_ ; my @L = grep {-l "$t$T$_"} @nfiles ; my $l = @L ; $l == 0 ? "" : FAINT "($l)"  }  ;
+    my @dfiles = do { my $t = $_ ; grep { -d "$t$I$_" and  $_ = $_.$I } @files } ; 
+    my $dnum = (scalar @dfiles) . do { my $t = $_ ; my @L = grep {-l "$t$I$_"} @dfiles ; my $l = @L ; $l == 0 ? "" : FAINT "($l)"  }  ;
+    my @nfiles =do { my $t = $_ ; grep { ! -d "$t$I$_" } @files } ; 
+    my $pnum = (scalar @nfiles ). do { my $t = $_ ; my @L = grep {-l "$t$I$_"} @nfiles ; my $l = @L ; $l == 0 ? "" : FAINT "($l)"  }  ;
     my ( $dp, $dn , $finum, $links ) = max_depth ( $_ ) if $o{d} ;
 
     my @out ; 
     push @out , $pnum , CYAN $dnum ;
     push @out , BRIGHT_BLUE ("$dp"), "$finum" . ($links ? FAINT "($links)" : '') if defined $dp ; # 最も深い所の深さ  それと数えたファイル数
-    push @out , YELLOW $_ . $T ; 
+    push @out , YELLOW $_ . $I ; 
     push @out , BRIGHT_BLUE $dn if defined $dn ; # 最も深い所にあるファイルの名前
     if ( $o{v} ) { 
       my $f1 = minstr @files ;
@@ -86,11 +86,11 @@ sub max_depth ( $ ) {
       my @t = splitdir ( $_ ) ; 
       $n++ if $_ ne '.' ; 
       $l ++ if -l $_ ; 
-      $depth = @t - 1 and $deepest_file_name = -d $_ ? "$_$T" : $_ if @t > $depth ;
+      $depth = @t - 1 and $deepest_file_name = -d $_ ? "$_$I" : $_ if @t > $depth ;
     }
    } , '.' ) ; 
    chdir $dir0 ;
-   return $depth , $deepest_file_name =~ s/^\.$T//or , $n , $l ;
+   return $depth , $deepest_file_name =~ s/^\.$I//or , $n , $l ;
 }
 
 sub VERSION_MESSAGE {}
