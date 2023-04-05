@@ -43,13 +43,11 @@ sub measure_simple {
     chdir $_ ; 
     my ( @dfiles , @nfiles ) ; # ディレクトリかそれ以外か
     for ( @files ) { if ( -d ) { push @dfiles, $_ ; $_ .= $I } else { push @nfiles, $_ } }
-    my $dnum = scalar @dfiles . do { my @L = grep { -l } @dfiles ; my $l = @L ; $l == 0 ? "" : FAINT "($l)"  }  ;
-    my $pnum = scalar @nfiles . do { my @L = grep { -l } @nfiles ; my $l = @L ; $l == 0 ? "" : FAINT "($l)"  }  ;
     my ( $dp, $dn , $finum, $links ) = max_depth ( $_ ) if $o{d} ; # <-- - 深い所まで見る
     chdir $dir0 ;
 
     my @out ; 
-    push @out , $pnum , CYAN $dnum ;
+    push @out , fsl( @nfiles ) , CYAN fsl( @dfiles ) ; 
     push @out , BRIGHT_BLUE ("$dp"), "$finum" . ($links ? FAINT "($links)" : '') if defined $dp ; # 最も深い所の深さ  それと数えたファイル数
     push @out , YELLOW $_ . $I ; 
     push @out , BRIGHT_BLUE $dn if defined $dn ; # 最も深い所にあるファイルの名前
@@ -75,6 +73,9 @@ sub measure_simple {
 
 use File::Find qw[ find ] ; 
 
+sub fsl ( @ ) {  # Faint, Symblic Link の略のつもり。
+  scalar @_ . do { my @L = grep { -l } @_ ; @L == 0 ? "" : FAINT "(" . scalar @L . ")"  }  ;
+}
 
 sub max_depth ( $ ) { 
   my $dir0 = getcwd ;
