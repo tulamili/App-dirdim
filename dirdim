@@ -3,14 +3,15 @@
 use strict ; 
 use warnings ; 
 use feature qw[ say ] ; 
+use Cwd qw [ getcwd ] ;
 use Time::HiRes qw[gettimeofday tv_interval] ; 
-my $time_start ;# = [ gettimeofday ] ; 
 use Getopt::Std ; 
 use Term::ANSIColor qw [ :constants ] ; ${Term::ANSIColor::AUTORESET} = 1 ; 
 use File::Spec::Functions qw[ catfile splitdir ] ; 
 use List::Util qw[ minstr maxstr ] ;
 use App::dirdim ; # $App::dirdim::VERSIONを利用するため。開発中は、既にインストール済みのものを使ってしまうので、意図しにくい動作になるだろう。
 
+my $time_start ;# = [ gettimeofday ] ; 
 BEGIN { $time_start = [ gettimeofday ] }; # BEGIN UNITCHECK CHECK INIT 
 my $I = catfile '', '' ; # OS毎に異なる可能性のある、ファイルパスの区切り文字を取得。 
 
@@ -31,6 +32,7 @@ sub measure_simple {
   say join "\t" , map { UNDERLINE $_ } @tmp ; 
   
   my ($y,$z) = (0,0) ; # 結果的に処理対象となったものと、そうでないもの
+  my $dir0 = getcwd ;
   for ( @ARGV ) { 
     chomp ;
     do { print join("\t",'','',$_,RED "not a directory."),"\n" ; $z++ ; next } if ! -d $_  ; 
@@ -38,11 +40,13 @@ sub measure_simple {
     my @files = grep { ! /^\.{1,2}$/ } readdir $dh  ; # そのディレクトリの下の各ファイルについて、ファイル名のみが入る(ディレトクリ名は入らない)。
     @files = grep {/^\./ } @files if $o{'.'} =~ m/only/io ; # -. なら、ドットファイルのみを対象とする。
     @files = grep { ! /^\./ } @files if 0 eq $o{'.'} ; # -. 0 なら、ドットファイルは対象外とする。
-    my @dfiles = do { my $t = $_ ; grep { -d "$t$I$_" and  $_ = $_.$I } @files } ; 
-    my $dnum = (scalar @dfiles) . do { my $t = $_ ; my @L = grep {-l "$t$I$_"} @dfiles ; my $l = @L ; $l == 0 ? "" : FAINT "($l)"  }  ;
-    my @nfiles =do { my $t = $_ ; grep { ! -d "$t$I$_" } @files } ; 
-    my $pnum = (scalar @nfiles ). do { my $t = $_ ; my @L = grep {-l "$t$I$_"} @nfiles ; my $l = @L ; $l == 0 ? "" : FAINT "($l)"  }  ;
+    chdir $_ ; 
+    my @dfiles = do { grep { -d and $_ .= $I } @files } ; 
+    my $dnum = (scalar @dfiles) . do { my @L = grep { -l } @dfiles ; my $l = @L ; $l == 0 ? "" : FAINT "($l)"  }  ;
+    my @nfiles =do { grep { ! -d } @files } ; 
+    my $pnum = (scalar @nfiles ). do { my @L = grep { -l } @nfiles ; my $l = @L ; $l == 0 ? "" : FAINT "($l)"  }  ;
     my ( $dp, $dn , $finum, $links ) = max_depth ( $_ ) if $o{d} ;
+    chdir $dir0 ;
 
     my @out ; 
     push @out , $pnum , CYAN $dnum ;
@@ -70,7 +74,7 @@ sub measure_simple {
 }
 
 use File::Find qw[ find ] ; 
-use Cwd qw [ getcwd ] ;
+
 
 sub max_depth ( $ ) { 
   my $dir0 = getcwd ;
