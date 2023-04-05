@@ -1,6 +1,6 @@
 package App::dirdim ;  
-our $VERSION = '0.040' ; 
-our $DATE = '2023-03-29T14:58+09:00' ; 
+our $VERSION = '0.041' ; 
+our $DATE = '2023-04-05T14:34+09:00' ; 
 
 =encoding utf8
 
@@ -16,22 +16,28 @@ This module provides a Unix-like command `F<dirdim>'.
 
  dirdim DIR [DIR] [DIR] ..
 
-  指定されたディレクトリの直下にある、非ディリクトリファイルの数とディレトリの数を出力する。
-  シンボリックファイルの個数は括弧内に示す。 (何も引数が無い場合は、カレントディレクトリに対して動作。)
-   --help でヘルプを表示。
+  Counts the numbers of files just under the specified director(y/ies).
+  The numbers are each of both for non-directories and directories. 
+  (Symblic files are also counted and the number is shown in the round parenthesis.)
+  If any argument is not specified as DIR, the current directory is regarded to be specified.
 
- 開発上のメモ: 
-   * glob の */../*のような探索と File::Find による探索の違いを発見した。dirdimとdirdigで共通化の検討が必要。
-   * Ctrl-Cを押下した時の挙動を決めたい。
-   * 色を消すオプションを実装した方が良いだろうか? 他のコマンドの colorplus -0 に任せるべきか?
+  `dirdim --help' shows Japanese help. 
+  `perldoc App::dirdim' shows English help. 
+
+ Options : 
+
+  -d  ; The "maximum depth" and the number of all files (equivalently via `find' command) are shown. 
+  -v  : Verbosely shows the names of files names as examples. The first and the last are shown.
+  -. 0    : Suppresses counting the files having the name beginning from "." (period).
+  -. only : Counting only the files having the name beginning from "." (period).
 
 =head1 AUTHOR
 
-下野寿之 Toshiyuki SHIMONO <bin4tsv@gmail.com> 統計数理研究所 外来研究員
+下野寿之 Toshiyuki SHIMONO <bin4tsv@gmail.com> The Institute of Statistical Mathematics, a visiting researcher. 
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2022 Toshiyuki SHIMONO. All rights reserved.
+Copyright (c) 2022-2023 Toshiyuki SHIMONO. All rights reserved.
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
 
