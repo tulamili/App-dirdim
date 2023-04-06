@@ -68,6 +68,10 @@ nondir  subdir  depth   alltree given_dir   An example at the deepest
 8   5   5   218 .git/   logs/refs/remotes/origin/master
 8   11  5   243 total
 
+上記の例は、いずれも、このソフトウェアを開発したディレクトリで作成者の環境で
+試している。UNX系コマンドやシェルに使い慣れていれば、環境が違っても何も問題無く
+すぐ使えるであろう。
+
 ■■ 利用シーンの例 ■■
 
 - 多数のデータファイルが日次で毎日到着していて、毎日の各日付に相当するディレクトリに
