@@ -16,7 +16,7 @@ my $time_start ;# = [ gettimeofday ] ;
 BEGIN { $time_start = [ gettimeofday ] }; # BEGIN UNITCHECK CHECK INIT  # 動作時間の測定をできるだけ正確にするためBEGINで囲んだ。
 my $I = catfile '', '' ; # OS毎に異なる可能性のある、ファイルパスの区切り文字を取得。 
 
-getopts '.:dv' , \my%o ; 
+getopts '.:adv' , \my%o ; 
 $o{'.'} //= ''  ;
 @ARGV = ( "." ) unless @ARGV  ; # & HELP_MESSAGE unless @ARGV ; 
 my ($y,$z) = (0,0) ; # 結果的に処理対象となったものと、そうでないもの
@@ -36,7 +36,7 @@ sub measure_simple {
   my $dir0 = getcwd ;
   for ( @ARGV ) { 
     chomp ;
-    do { print join("\t",'','',$_,RED "not a directory."),"\n" ; $z++ ; next } if ! -d $_  ; 
+    do { print join("\t",'','',$_,RED ": Not a directory."),"\n" if $o{a} ; $z++ ; next } if ! -d $_  ; 
     opendir my $dh , $_ or do { warn "$_ does not open.\n" ; next } ;
     my @files = grep { ! /^\.{1,2}$/ } readdir $dh  ; # そのディレクトリの下の各ファイルについて、ファイル名のみが入る(ディレトクリ名は入らない)。
     @files = grep {/^\./ } @files if $o{'.'} =~ m/only/io ; # -. なら、ドットファイルのみを対象とする。
@@ -133,7 +133,8 @@ sub HELP_MESSAGE {
 
  オプション: 
 
-  -d  ; 最も深い所にあるファイルの名前とその深さを示す。さらに、findで見つかるファイルの個数も出力。
+  -a  : 引数にディレクトリで無いファイルが指定された場合に、そのことを示す。 
+  -d  : 最も深い所にあるファイルの名前とその深さを示す。さらに、findで見つかるファイルの個数も出力。
   -v  : ファイル名の(文字列としての)最小値と最大値も出力する。(verbose)
   -. 0    : ファイル名がピリオドで始まるファイル(隠しファイルと言われる)は、計数対象から除外する。
   -. only : ファイル名がピリオドで始まるファイル(隠しファイルと言われる)のみを、計数対象にする。
