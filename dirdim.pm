@@ -1,12 +1,12 @@
 package App::dirdim ;  
-our $VERSION = '0.045' ; 
-our $DATE = '2023-04-05T22:30+09:00' ; 
+our $VERSION = '0.046' ; 
+our $DATE = '2023-04-06T15:23+09:00' ; 
 
 =encoding utf8
 
 =head1 NAME
 
-App::dirdim -- Counts the numbers of files just under the specified director(y/ies).
+App::dirdim -- Counts file numbers just below given director(y/ies) also with the height of the directory strata.
 
 =head1 SYNOPSIS
 
@@ -34,7 +34,9 @@ This module provides a Unix-like command `F<dirdim>'.
 =head1 SEE ALSO
 
   App::colorplus -- `colorplus -0' deletes the colros given by ANSI escape code. 
-  App::dirlayers -- gives minute hierarchial information about a directory using a triangular matrix.
+  App::dirstrata -- gives minute hierarchial information about a directory using a triangular matrix.
+  App::diroctopus -- shows the longest directory branch paths (most apart each other) of a given directory.
+  App::expandtab -- output vertically-aligned table using space characters from a TSV file.
 
 =head1 AUTHOR
 
