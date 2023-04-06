@@ -22,7 +22,7 @@ nondir  subdir  given_dir
 
 (タブ文字で区切っているだけなので、表示の仕方により縦位置がずれて見えることに注意。
 縦揃えをするには、App::expandtab をインストールすると使えるコマンド expandtab
- を使うと良い。)
+を使うと良い。)
 
 ■■ 目的 ■■
 
@@ -61,7 +61,13 @@ nondir  subdir  depth   alltree given_dir   An example at the deepest
 colorplus のコマンドを使って、 colorplus -0 に dirdim の出力を渡すと良い。
 
 例:  
-> dirdim * | cololrplus -0
+> dirdim * | colorplus -0
 
 なお、上記の説明で > は全てコマンドラインのプロンプト文字列を表しており、
 実際のコマンド、それより後の文字列である。
+
+dirdimの名前の由来はディレクトリ(dirctory)の寸法(dimension)に由来する。
+このようなコマンドを作成する場合は 英語2単語で計10文字以内にすることにしている。
+また、他にdirを使ったコマンドを作成してるので、dirを先に持ってくることで、
+このコマンドが必要な場面で思い出しやすくしたり、アルファベット順にリストアップした
+ときにまとまるようにしたりした。
